@@ -48,12 +48,12 @@ def make_public_task(task):
             new_task[field] = task[field]
     return new_task
     
-@app.route('/todo/api/v1.0/tasks', methods = ['GET'])
+@app.route('/tasks', methods = ['GET'])
 @auth.login_required
 def get_tasks():
     return jsonify( { 'tasks': map(make_public_task, tasks) } )
 
-@app.route('/todo/api/v1.0/tasks/<int:task_id>', methods = ['GET'])
+@app.route('/tasks/<int:task_id>', methods = ['GET'])
 @auth.login_required
 def get_task(task_id):
     task = filter(lambda t: t['id'] == task_id, tasks)
@@ -61,7 +61,7 @@ def get_task(task_id):
         abort(404)
     return jsonify( { 'task': make_public_task(task[0]) } )
 
-@app.route('/todo/api/v1.0/tasks', methods = ['POST'])
+@app.route('/tasks', methods = ['POST'])
 @auth.login_required
 def create_task():
     if not request.json or not 'title' in request.json:
@@ -75,7 +75,7 @@ def create_task():
     tasks.append(task)
     return jsonify( { 'task': make_public_task(task) } ), 201
 
-@app.route('/todo/api/v1.0/tasks/<int:task_id>', methods = ['PUT'])
+@app.route('/tasks/<int:task_id>', methods = ['PUT'])
 @auth.login_required
 def update_task(task_id):
     task = filter(lambda t: t['id'] == task_id, tasks)
@@ -94,7 +94,7 @@ def update_task(task_id):
     task[0]['done'] = request.json.get('done', task[0]['done'])
     return jsonify( { 'task': make_public_task(task[0]) } )
     
-@app.route('/todo/api/v1.0/tasks/<int:task_id>', methods = ['DELETE'])
+@app.route('/tasks/<int:task_id>', methods = ['DELETE'])
 @auth.login_required
 def delete_task(task_id):
     task = filter(lambda t: t['id'] == task_id, tasks)
